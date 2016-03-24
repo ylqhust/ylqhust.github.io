@@ -1,5 +1,5 @@
 # Site settings
-title:上下求索
+title: "上下求索"
 header-img: "img/green.jpg"
 tagline: "cn"  
 description: "Avgest|路漫漫其修远兮,吾将上下而求索"  
@@ -43,7 +43,7 @@ defaults:
       type: "posts"
     values:
       layout: "post"
-      author: "CnFeat"
+      author: "Avgest"
       header-img: "img/green.jpg" # We don't want posts without a header image, that whould mean white on white
 
 # Comments 
