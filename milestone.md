@@ -6,19 +6,16 @@ header-img: "img/zhihu.jpg"
 ---
 
 
-<center>
-    <p><img src="http://7xlfkx.com1.z0.glb.clouddn.com/white2.jpg" align="center"></p>
-</center>
-
-
 ###代表作：
 
-
-- [《世界并非如你所见——用可供性来发现更大的世界》](http://www.jianshu.com/p/6f1404e0240d)
-
-- [《如何正确地练习写作》](http://www.jianshu.com/p/2621444b619d)
-
 - [《24款最值得推荐的中文字体》](http://cnfeat.com/blog/2015/05/22/a-24-chinese-fonts/)
+- [如何搭建一个独立博客——简明 Github Pages与 jekyll 教程](http://cnfeat.com/blog/2014/05/10/how-to-build-a-blog/)
+- [RxJava 与 Retrofit 结合的最佳实践](http://gank.io/post/56e80c2c677659311bed9841)
+- [Android Bitmap面面观](http://jayfeng.com/2016/03/22/Android-Bitmap%E9%9D%A2%E9%9D%A2%E8%A7%82/)
+- [iOS应用架构谈 组件化方案](http://casatwy.com/iOS-Modulization.html)
+- [AndroidStudio怎么将开源项目发布到jcenter](http://blog.csdn.net/wangdong20/article/details/50098535)
+- [awesome-android-tips](https://github.com/jiang111/awesome-android-tips)
+- [Android网络请求心路历程](http://www.jianshu.com/p/3141d4e46240)
 
 
 
