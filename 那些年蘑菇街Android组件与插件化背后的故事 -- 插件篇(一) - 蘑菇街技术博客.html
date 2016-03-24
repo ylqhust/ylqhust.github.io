@@ -1,0 +1,486 @@
+<!DOCTYPE HTML>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>那些年蘑菇街Android组件与插件化背后的故事 -- 插件篇(一) - 蘑菇街技术博客</title>
+
+    <!-- 使用url函数转换相关路径 -->
+    <link rel="stylesheet" href="http://mogu.io/admin/css/normalize.css">
+    <link rel="stylesheet" href="http://mogu.io/admin/css/grid.css">
+    <link rel="stylesheet" href="http://mogu.io/usr/themes/default/style.css">
+
+    <!--[if lt IE 9]>
+    <script src="http://mogu.io/admin/js/html5shiv.js"></script>
+    <script src="http://mogu.io/admin/js/respond.js"></script>
+    <![endif]-->
+
+    <!-- 通过自有函数输出HTML头部信息 -->
+    <script type="text/javascript">
+function get_form(input) {
+	var node = input;
+	while (node) {
+		node = node.parentNode;
+		if (node.nodeName.toLowerCase() == "form") {
+			return node;
+		}
+	}
+	return null;
+};
+window.onload = function() {
+	var inputs = document.getElementsByTagName("textarea");
+	var i, input_author;
+	input_author = null;
+	for (i=0; i<inputs.length; i++) {
+		if (inputs[i].name.toLowerCase() == "text") {
+			input_author = inputs[i];
+			break;
+		}
+	}
+	var form_comment = get_form(input_author);
+	if (form_comment) {
+		var input_hd = document.createElement("input");
+		input_hd.type = "hidden";
+		input_hd.name = "filter_spam";
+		input_hd.value = "48616E6E79";
+		form_comment.appendChild(input_hd);
+	} else {
+		alert("find input author error!");
+	}
+}
+</script>
+<meta name="description" content="插件化的基石 -- apk动态加载随着我街业务的蓬勃发展，产品和运营随时上新功能新活动的需求越来越强烈，经常可以听到“有个功能我想周x上，行不行”。行么？当然是不行啦，上新功能得发新版本啊，到时..." />
+<meta name="keywords" content="动态加载,dex,resources,插件化,android" />
+<meta name="generator" content="Typecho 1.0/14.10.10" />
+<meta name="template" content="default" />
+<link rel="pingback" href="http://mogu.io/action/xmlrpc" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://mogu.io/action/xmlrpc?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://mogu.io/action/xmlrpc?wlw" />
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://mogu.io/feed/117-117" />
+<link rel="alternate" type="application/rdf+xml" title="RSS 1.0" href="http://mogu.io/feed/rss/117-117" />
+<link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="http://mogu.io/feed/atom/117-117" />
+<script type="text/javascript">
+(function () {
+    window.TypechoComment = {
+        dom : function (id) {
+            return document.getElementById(id);
+        },
+    
+        create : function (tag, attr) {
+            var el = document.createElement(tag);
+        
+            for (var key in attr) {
+                el.setAttribute(key, attr[key]);
+            }
+        
+            return el;
+        },
+
+        reply : function (cid, coid) {
+            var comment = this.dom(cid), parent = comment.parentNode,
+                response = this.dom('respond-post-117'), input = this.dom('comment-parent'),
+                form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                textarea = response.getElementsByTagName('textarea')[0];
+
+            if (null == input) {
+                input = this.create('input', {
+                    'type' : 'hidden',
+                    'name' : 'parent',
+                    'id'   : 'comment-parent'
+                });
+
+                form.appendChild(input);
+            }
+
+            input.setAttribute('value', coid);
+
+            if (null == this.dom('comment-form-place-holder')) {
+                var holder = this.create('div', {
+                    'id' : 'comment-form-place-holder'
+                });
+
+                response.parentNode.insertBefore(holder, response);
+            }
+
+            comment.appendChild(response);
+            this.dom('cancel-comment-reply-link').style.display = '';
+
+            if (null != textarea && 'text' == textarea.name) {
+                textarea.focus();
+            }
+
+            return false;
+        },
+
+        cancelReply : function () {
+            var response = this.dom('respond-post-117'),
+            holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
+
+            if (null != input) {
+                input.parentNode.removeChild(input);
+            }
+
+            if (null == holder) {
+                return true;
+            }
+
+            this.dom('cancel-comment-reply-link').style.display = 'none';
+            holder.parentNode.insertBefore(response, holder);
+            return false;
+        }
+    };
+})();
+</script>
+<script type="text/javascript">
+(function () {
+    var event = document.addEventListener ? {
+        add: 'addEventListener',
+        focus: 'focus',
+        load: 'DOMContentLoaded'
+    } : {
+        add: 'attachEvent',
+        focus: 'onfocus',
+        load: 'onload'
+    };
+
+    document[event.add](event.load, function () {
+        var r = document.getElementById('respond-post-117');
+
+        if (null != r) {
+            var forms = r.getElementsByTagName('form');
+            if (forms.length > 0) {
+                var f = forms[0], textarea = f.getElementsByTagName('textarea')[0], added = false;
+
+                if (null != textarea && 'text' == textarea.name) {
+                    textarea[event.add](event.focus, function () {
+                        if (!added) {
+                            var input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = '_';
+                            input.value = (function () {
+    var _kH20 = //'s'
+'4a'+'03'//'J'
++'13'//'lgf'
++'d94'//'o'
++'b18'//'qK'
++'0d'//'AE'
++//'Rp2'
+'45'+''///*'jS'*/'jS'
++//'3P3'
+'db'+//'3'
+'332'+//'t'
+'f4'+//'ioB'
+'0c'+/* 'a'//'a' */''+'r2'//'r2'
++//'7h3'
+'e'+//'F'
+'01b'+//'bsA'
+'49'+''///*'Am'*/'Am'
++/* 'Sxn'//'Sxn' */''+'T'//'T'
++//'O'
+'f', _lqHM4 = [[25,27],[31,32]];
+    
+    for (var i = 0; i < _lqHM4.length; i ++) {
+        _kH20 = _kH20.substring(0, _lqHM4[i][0]) + _kH20.substring(_lqHM4[i][1]);
+    }
+
+    return _kH20;
+})();
+
+                            f.appendChild(input);
+                            added = true;
+                        }
+                    });
+                }
+            }
+        }
+    });
+})();
+</script></head>
+<body>
+<!--[if lt IE 8]>
+    <div class="browsehappy">当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/">升级你的浏览器</a>.</div>
+<![endif]-->
+
+<header id="header" class="clearfix">
+    <div class="container">
+        <div class="colgroup">
+            <div class="site-name col-mb-12 col-9" style="padding-left:75px;background:url(http://s13.mogujie.cn/pic/140520/2r6z_kq2dcttekrbewq2ugfjeg5sckzsew_65x65.png) no-repeat; height: 65px; padding-top:13px;">
+                <a id="logo" href="http://mogu.io/">
+                                        蘑菇街技术博客                </a>
+                <p class="description"></p>
+            </div>
+            <div class="site-search col-3 kit-hidden-tb">
+                <form id="search" method="post" action="./" role="search">
+                    <label for="s" class="sr-only">搜索关键字</label>
+                    <input type="text" name="s" class="text" placeholder="输入关键字搜索" />
+                    <button type="submit" class="submit">搜索</button>
+                </form>
+            </div>
+            <div class="col-mb-12">
+                <nav id="nav-menu" class="clearfix" role="navigation">
+                    <a href="http://mogu.io/">首页</a>
+                                                            <a href="http://mogu.io/start-page.html" title="关于">关于</a>
+                    
+
+
+
+                                            <a href="http://mogu.io/admin/register.php" style="float: right; border: none;">注册</a>
+                        <a href="http://mogu.io/admin/login.php" style="float: right; border: none;">登录</a>
+                    
+
+                    
+                    
+                </nav>
+            </div>
+        </div><!-- end .colgroup -->
+    </div>
+</header><!-- end #header -->
+<div id="body">
+    <div class="container">
+        <div class="colgroup clearfix">
+
+    
+    
+
+<div class="col-mb-12 col-8" id="main" role="main">
+    <article class="post">
+        <h1 class="post-title"><a href="http://mogu.io/117-117">那些年蘑菇街Android组件与插件化背后的故事 -- 插件篇(一)</a></h1>
+        <ul class="post-meta">
+            <li>作者：海猪</li>
+            <li>时间：September 18, 2015</li>
+            <li>分类：<a href="http://mogu.io/category/mogu-mobile/">mogu.mobile</a></li>
+        </ul>
+        <div class="post-content">
+            <h2>插件化的基石 -- apk动态加载</h2>
+<p>随着我街业务的蓬勃发展，产品和运营随时上新功能新活动的需求越来越强烈，经常可以听到“有个功能我想周x上，行不行”。行么？当然是不行啦，上新功能得发新版本啊，到时候费时费力打乱开发节奏不说，覆盖率也是个问题。苏格拉底曾经说过：“现在移动端的主要矛盾是产品日益增长的功能需求与平台落后的发布流程之间的矛盾”。</p>
+<p>当然，作为一个靠谱的程序猿，我们就是为了满足产品的需求而存在的(正义脸)。于是在一个阳光明媚的早晨，吃完公司的免费早餐后，我和小强、叶开，决定做一个完善的Android动态加载框架。</p>
+<p>Android动态加载技术在蘑菇街的第一次实践，还是在14年的时候，使用的就是之前网上广(tu)为(du)流(si)传(fang)的方式，这种方式有一个重大缺陷，就是插件内部对资源的访问只能通过自己定义的方式，包括对layout文件的inflate等，使用getResouces的方式，分分钟crash给你看，而且内部实现有些复杂，容易出现莫名其妙的ResourcesNotFound错误。在一段时间的使用之后，始终无法大面积推广，原因就是对开发人员来说，写一个“正常”的模块和写一个动态加载模块，写法是不一样的。这件事一直如哏在喉，如果这个框架无法做到对开发业务的同学们透明，那么就很难推广开去。如何做到对业务开发者透明呢，最重要的是对于各类系统api的使用，尤其是Android四大组件的使用和资源访问，都要遵循系统提供的方式。</p>
+<p>抛开上面的东西，从头开始讲述一下动态加载的原理：<br />
+<strong><em>Android应用程序的.java文件在编译期会通过javac命令编译成.class文件，最后再把所有的.class文件编译成.dex文件放在.apk包里面。那么动态加载就是在运行时把插件apk直接加载到classloader里面的技术。</em></strong></p>
+<p>看完上面的原理，不知道你有没有什么疑问，反正我是有的。</p>
+<ol>
+<li>如何加载插件里面的.dex文件。</li>
+<li>apk里面的资源怎么办。</li>
+</ol>
+<p>上面两个问题是动态加载框架最重要的两点，无法动态安装dex或资源文件的动态加载框架都是耍流氓。我们在实现这个框架的时候同样也遇到了这两个问题。</p>
+<h3>如何动态加载插件代码：</h3>
+<p>关于代码加载，系统提供了<a href="https://developer.android.com/reference/dalvik/system/DexClassLoader.html">DexClassLoader</a>来加载插件代码。开发者可以对每一个插件分配一个<a href="https://developer.android.com/reference/dalvik/system/DexClassLoader.html">DexClassLoader</a>(这是目前最常见的一种方式)，也可以动态得把插件加载到当前运行环境的classloader中。蘑菇街采用的是后者，这种方式可以有效的防止各种莫名其妙的<a href="https://developer.android.com/reference/java/lang/ClassCastException.html">ClassCastException</a>，当你在crash后台看到各种 A cast A错误而欲哭无泪的时候，我想你会喜欢上这种方式。<br />
+事情当然不会这么简单，系统提供的DexClassloader对外api中，只有一种方式可以向类加载器指定加载路径。就是在构造函数中传入apk/zip/dex路径。这完全不符合我们“动态”的原则，难道每次加载一个插件，都必须重新实例化一个类加载器出来吗？这个时候我们想到了google提供的multidex插件，这个插件旨在帮助函数超过65536上限的应用在编译期切割class到多个dex文件中。经过观察发现，5.0以下的Android系统，在应用安装的时候只认classes.dex文件，并在安装期对这个dex文件进行opt操作，生成的odex文件放在/data/dalivk-cache里面。那么剩下classes(N).dex怎么办呢，答案就是如果在编译期使用multidex插件的话，开发者还需要让自己的Application继承<a href="https://developer.android.com/reference/android/support/multidex/MultiDexApplication.html">MultiDexApplication</a>，这样说起来，这个<a href="https://developer.android.com/reference/android/support/multidex/MultiDexApplication.html">MultiDexApplication</a>应该就有加载剩下的classes(N).dex的能力了。查看<a href="https://developer.android.com/reference/android/support/multidex/MultiDexApplication.html">MultiDexApplication</a>代码，果然找到了线索：</p>
+<pre><code>public class MultiDexApplication extends Application {
+  @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    MultiDex.install(this);
+  }
+}
+</code></pre>
+<p>可以看到，它在attachBaseContext函数调用了support包中<a href="https://developer.android.com/reference/android/support/multidex/MultiDex.html">MultiDex</a>类的install函数来安装classes(N).dex，于是都是应用层代码，它能动态安装那表示我们也可以。有了以上的分析，剩下要做的就只是去扒一扒install这个函数了。</p>
+<hr />
+<h3>如何动态加载插件资源：</h3>
+<p>我们在开发的时候，当有需要用到资源的地方，可以直接调用<a href="https://developer.android.com/reference/android/content/Context.html">Context</a>的getResources()函数返回<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>的来访问打包在apk中的资源文件。在研究如何动态添加资源到系统的<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>对象的时候，有必要先了解一下<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>本身是如何访问到资源的。</p>
+<p>查看系统的<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>源码，我们发现这个类主要做了两件事，首当其冲的当然是访问资源，另外一件就是管理资源配置信息。对于资源的动态加载来说，我们关心的是它如何做第一件事的。<strong><em>实际上，<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>对资源的访问，全部代理给了另一个重要的对象<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a></em></strong>。那么问题转化成了，<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>是如何做到对资源的访问的。<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>类在它的构造函数里对<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>做了一些重要的初始化:</p>
+<pre><code>public Resources(AssetManager assets, DisplayMetrics metrics, Configuration config,
+            CompatibilityInfo compatInfo, IBinder token) {
+        mAssets = assets;
+        mMetrics.setToDefaults();
+        if (compatInfo != null) {
+            mCompatibilityInfo = compatInfo;
+        }
+        mToken = new WeakReference&lt;IBinder&gt;(token);
+        updateConfiguration(config, metrics);
+        assets.ensureStringBlocks();
+}
+</code></pre>
+<p>其中的重点就是调用了<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>对象的ensureStringBlocks()函数，这个函数的实现如下:</p>
+<pre><code>/*package*/ final void ensureStringBlocks() {
+    if (mStringBlocks == null) {
+        synchronized (this) {
+            if (mStringBlocks == null) {
+                makeStringBlocks(sSystem.mStringBlocks);
+            }
+        }
+    }
+}
+</code></pre>
+<p>函数先判断mStringBlocks变量是否为空，如果不为空的话，表示需要被初始化，于是调用makeStringBlocks函数初始化mStringBlocks:</p>
+<pre><code>/*package*/ final void makeStringBlocks(StringBlock[] seed) {
+    final int seedNum = (seed != null) ? seed.length : 0;
+    final int num = getStringBlockCount();
+    mStringBlocks = new StringBlock[num];
+    if (localLOGV) Log.v(TAG, &quot;Making string blocks for &quot; + this
+            + &quot;: &quot; + num);
+    for (int i=0; i&lt;num; i++) {
+        if (i &lt; seedNum) {
+            mStringBlocks[i] = seed[i];
+        } else {
+            mStringBlocks[i] = new StringBlock(getNativeStringBlock(i), true);
+        }
+    }
+}
+</code></pre>
+<p>这里的mStringBlocks对象是一个StringBlock数组，这个类被标记为@hide，表示应用层根本不需要关心它的存在。那么它是做什么用的呢，它就是<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>能够访问资源的奥秘所在，<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>所有访问资源的函数，例如getResourceTextArray()，都最终通过StringBlock再代理到native进行访问的。看到这里，依然没有任何看到能够指示为什么开发者可以访问自己应用的资源，那么我们再看得前面一点，看看传入<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>的构造函数之前，asset参数是不是被“做过手脚”。函数调用辗转到ResourceManager的getTopLevelResources函数:</p>
+<pre><code>public Resources getTopLevelResources(String resDir, String[] splitResDirs,
+                String[] overlayDirs, String[] libDirs, int displayId,
+                Configuration overrideConfiguration, CompatibilityInfo compatInfo, IBinder token) {
+    ...
+    AssetManager assets = new AssetManager();
+    if (resDir != null) {
+        if (assets.addAssetPath(resDir) == 0) {
+              return null;
+        }
+    }
+    ...
+}
+</code></pre>
+<p>函数代码有点多，截取最重要的部分，那就是系统通过调用<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>的addAssetPath函数，将需要加载的资源路径加了进去。addAssetPath函数返回一个int类型，它指示了每个被添加的资源路径在native层一个数组中的位置，这个数组保存了系统资源路径(framework-res.apk)，和应用自己添加的所有的资源路径。再回过头看makeStringBlocks函数，就豁然开朗了：</p>
+<ol>
+<li>makeStringBlocks函数的参数也是一个StringBlock数组，它表示系统资源，首先它调用getStringBlockCount函数得到当前应用所有要加载的资源路径数量。</li>
+<li>然后进入循环，如果属于系统资源，就直接用传入参数seed中的对象来赋值。</li>
+<li>如果是应用自己的资源，就实例化一个新的StringBlock对象来赋值。并在StringBlock的构造函数中调用getNativeStringBlock函数来获取一个native层的对象指针，这个指针被java层StringBlock对象用来调用native函数，最终达到访问资源的目的。</li>
+</ol>
+<p>有兴趣的同学可以继续深入native层的源码，可以看到不管是addAssetPath函数还是makeStringBlocks函数，使用的都是native层同一个数组，这样，这两个函数就被关联了起来。</p>
+<p>到这里，我们已经知道了如何动态添加资源路径的“秘密”。</p>
+<hr />
+<p>解决了以上两个问题，一个基本满足要求的动态加载框架就被搭了起来。<br />
+关于如何延迟加载组件的问题，请期待下一期的<strong>那些年蘑菇街Android组件与插件化背后的故事</strong>。</p>
+<p>ps:查看native层Resources.cpp的代码，我们发现，Android5.0及以上版本是真正的支持动态添加资源路径到系统<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>对象, 直接反射调用getAsset.addAssetPath即可。5.0以下版本只是“伪动态”，需要自己重新实例化一个<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>对象和<a href="https://developer.android.com/reference/android/content/res/AssetManager.html">AssetManager</a>对象，添加完所有需要的资源路径后，替换运行环境的<a href="https://developer.android.com/reference/android/content/res/Resources.html">Resources</a>对象才可以做到“动态”。这个跟5.0以下的Resources.cpp在初始化完成之后，无法动态扩展resTable有关。</p>
+        </div>
+        <p class="tags">标签：<a href="http://mogu.io/tag/%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/">动态加载</a>, <a href="http://mogu.io/tag/dex/">dex</a>, <a href="http://mogu.io/tag/resources/">resources</a>, <a href="http://mogu.io/tag/%E6%8F%92%E4%BB%B6%E5%8C%96/">插件化</a>, <a href="http://mogu.io/tag/android/">android</a></p>
+    </article>
+
+    <div id="comments">
+        	<h3>已有 2 条评论</h3>
+    
+    <ol class="comment-list"><li itemscope itemtype="http://schema.org/UserComments" id="comment-123686" class="comment-body comment-parent comment-odd">
+    <div class="comment-author" itemprop="creator" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="image"><img class="avatar" src="http://www.gravatar.com/avatar/153ee09d3b1f4764ae085088da36f523?s=32&amp;r=G&amp;d=" alt="guagua" width="32" height="32" /></span>
+        <cite class="fn" itemprop="name"><a href="http://mogu.io/117-117" rel="external nofollow">guagua</a></cite>
+    </div>
+    <div class="comment-meta">
+        <a href="http://mogu.io/117-117/comment-page-1#comment-123686"><time itemprop="commentTime" datetime="2015-12-21T18:42:34+08:00">December 21st, 2015 at 06:42 pm</time></a>
+            </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>看了下蘑菇街的apk 里面貌似没有用到插件化的东西啊？</p>
+    </div>
+    <div class="comment-reply">
+        <a href="http://mogu.io/117-117/comment-page-1?replyTo=123686#respond-post-117" rel="nofollow" onclick="return TypechoComment.reply('comment-123686', 123686);">回复</a>    </div>
+        <div class="comment-children" itemprop="discusses">
+        <ol class="comment-list"><li itemscope itemtype="http://schema.org/UserComments" id="comment-123697" class="comment-body comment-child comment-level-odd comment-odd comment-by-author">
+    <div class="comment-author" itemprop="creator" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="image"><img class="avatar" src="http://www.gravatar.com/avatar/c456f6474624509b76c5aa82b889f10c?s=32&amp;r=G&amp;d=" alt="海猪" width="32" height="32" /></span>
+        <cite class="fn" itemprop="name"><a href="https://github.com/dolphinwang" rel="external nofollow">海猪</a></cite>
+    </div>
+    <div class="comment-meta">
+        <a href="http://mogu.io/117-117/comment-page-1#comment-123697"><time itemprop="commentTime" datetime="2016-03-10T16:16:07+08:00">March 10th, 2016 at 04:16 pm</time></a>
+            </div>
+    <div class="comment-content" itemprop="commentText">
+    <p>目前还在灰度测试阶段~</p>
+    </div>
+    <div class="comment-reply">
+        <a href="http://mogu.io/117-117/comment-page-1?replyTo=123697#respond-post-117" rel="nofollow" onclick="return TypechoComment.reply('comment-123697', 123697);">回复</a>    </div>
+    </li>
+</ol>    </div>
+    </li>
+</ol>
+        
+    
+        <div id="respond-post-117" class="respond">
+        <div class="cancel-comment-reply">
+        <a id="cancel-comment-reply-link" href="http://mogu.io/117-117#respond-post-117" rel="nofollow" style="display:none" onclick="return TypechoComment.cancelReply();">取消回复</a>        </div>
+    
+    	<h3 id="response">添加新评论</h3>
+    	<form method="post" action="http://mogu.io/117-117/comment" id="comment-form" role="form">
+                		<p>
+                <label for="author" class="required">称呼</label>
+    			<input type="text" name="author" id="author" class="text" value="" required />
+    		</p>
+    		<p>
+                <label for="mail" class="required">Email</label>
+    			<input type="email" name="mail" id="mail" class="text" value="" required />
+    		</p>
+    		<p>
+                <label for="url" class="required">网站</label>
+    			<input type="url" name="url" id="url" class="text" placeholder="http://" value="" required />
+    		</p>
+                		<p>
+                <label for="textarea" class="required">内容</label>
+                <textarea rows="8" cols="50" name="text" id="textarea" class="textarea" required ></textarea>
+            </p>
+    		<p>
+                <button type="submit" class="submit">提交评论</button>
+            </p>
+    	</form>
+    </div>
+    </div>
+</div><!-- end #main-->
+
+<div class="col-mb-12 col-offset-1 col-3 kit-hidden-tb" id="secondary" role="complementary">
+        <section class="widget">
+		<h3 class="widget-title">最新文章</h3>
+        <ul class="widget-list">
+            <li><a href="http://mogu.io/159-159">Linux内核分析： OOM杀掉nginx后导致的系统hang问题</a></li><li><a href="http://mogu.io/156-156">Linux内核分析：页回收导致的cpu load瞬间飙高的问题分析与思考</a></li><li><a href="http://mogu.io/151-151">PaaS 7层动态路由的若干实现</a></li><li><a href="http://mogu.io/136-136">bond模式导致的虚拟化网络问题</a></li><li><a href="http://mogu.io/docker-with-lxcfs-130">基于LXCFS增强docker容器隔离性的分析</a></li><li><a href="http://mogu.io/127-127">不启动容器挂载容器文件系统的方法</a></li><li><a href="http://mogu.io/compile-docker-121">如何编译docker源码</a></li><li><a href="http://mogu.io/the-power-of-immutable-objects-120">不可变对象的魅力</a></li><li><a href="http://mogu.io/119-119">那些年蘑菇街Android组件与插件化背后的故事 -- 插件篇(二)</a></li><li><a href="http://mogu.io/mvvm-without-reactivecocoa-118">MVVM without ReactiveCocoa</a></li>        </ul>
+    </section>
+    
+        <section class="widget">
+		<h3 class="widget-title">最近回复</h3>
+        <ul class="widget-list">
+                            <li><a href="http://mogu.io/start-page.html/comment-page-3#comment-123698">Mry</a>：TT能否出一个CentOS 的集成版镜像，能直接部署在服务器上。...</li>
+                    <li><a href="http://mogu.io/117-117/comment-page-1#comment-123697">海猪</a>：目前还在灰度测试阶段~
+</li>
+                    <li><a href="http://mogu.io/156-156/comment-page-1#comment-123696">yafang</a>：numactl --hardware 来看节点free的内存会更...</li>
+                    <li><a href="http://mogu.io/156-156/comment-page-1#comment-123695">rick</a>：除了调整脏页比dirty ratio外，还可以附带调整脏页占系统...</li>
+                    <li><a href="http://mogu.io/java-base-cache-system-6/comment-page-1#comment-123694">jack</a>：这玩意直接用Spring cache不就行了么？
+</li>
+                    <li><a href="http://mogu.io/im-server-develop-01-8/comment-page-1#comment-123693">何小木</a>：没文化，真可怕
+</li>
+                    <li><a href="http://mogu.io/tcp-three-second-timeout-with-php-3/comment-page-1#comment-123692">何小木</a>：赞，拜读~~
+</li>
+                    <li><a href="http://mogu.io/151-151/comment-page-1#pingback-123691">PaaS 7层动态路由的若干实现 R11; YUNJIEMI.COM | 云揭秘</a>：[...]原文链接：http://mogu.io/151-151...</li>
+                    <li><a href="http://mogu.io/java-base-cache-system-6/comment-page-1#comment-123690">Alan.P</a>：接口与实现分离情况下采用
+Method method = ((M...</li>
+                    <li><a href="http://mogu.io/151-151/comment-page-1#comment-123689">purplegrape</a>：也可以考虑fabio,ebay用go实现的
+https://gi...</li>
+                </ul>
+    </section>
+    
+        <section class="widget">
+		<h3 class="widget-title">分类</h3>
+        <ul class="widget-list">
+            <li><a href="http://mogu.io/category/default/">默认分类</a> (6)</li><li><a href="http://mogu.io/category/mogu-im/">mogu.im</a> (8)</li><li><a href="http://mogu.io/category/java-%E6%8A%80%E6%9C%AF/">mogu.java</a> (2)</li><li><a href="http://mogu.io/category/%E8%98%91%E8%8F%87%E8%A1%97-%E5%89%8D%E7%AB%AF/">mogu.fe</a> (1)</li><li><a href="http://mogu.io/category/mogu-db/">mogu.db</a> (1)</li><li><a href="http://mogu.io/category/mogu-php/">mogu.php</a> (1)</li><li><a href="http://mogu.io/category/%E8%98%91%E8%8F%87%E8%A1%97-%E6%90%9C%E7%B4%A2/">mogu.search</a> (1)</li><li><a href="http://mogu.io/category/mogu-virtualization/">mogu.virtualization</a> (8)</li><li><a href="http://mogu.io/category/mogu-mm/">mogu-middleware</a> (3)</li><li><a href="http://mogu.io/category/mogu-trade/">mogu.trade</a> (2)</li><li><a href="http://mogu.io/category/mogu-item/">mogu.item</a> (1)</li><li><a href="http://mogu.io/category/mogu-mobile/">mogu.mobile</a> (5)</li>        </ul>
+	</section>
+    
+        <section class="widget">
+		<h3 class="widget-title">归档</h3>
+        <ul class="widget-list">
+            <li><a href="http://mogu.io/2016/03/">March 2016</a></li><li><a href="http://mogu.io/2016/02/">February 2016</a></li><li><a href="http://mogu.io/2015/12/">December 2015</a></li><li><a href="http://mogu.io/2015/10/">October 2015</a></li><li><a href="http://mogu.io/2015/09/">September 2015</a></li><li><a href="http://mogu.io/2015/08/">August 2015</a></li><li><a href="http://mogu.io/2015/07/">July 2015</a></li><li><a href="http://mogu.io/2015/06/">June 2015</a></li><li><a href="http://mogu.io/2015/04/">April 2015</a></li><li><a href="http://mogu.io/2014/09/">September 2014</a></li><li><a href="http://mogu.io/2014/06/">June 2014</a></li><li><a href="http://mogu.io/2014/05/">May 2014</a></li>        </ul>
+	</section>
+    
+    	<section class="widget">
+		<h3 class="widget-title">其它</h3>
+        <ul class="widget-list">
+                            <li class="last"><a href="http://mogu.io/admin/login.php">登录</a></li>
+                        <li><a href="http://mogu.io/feed/">文章 RSS</a></li>
+            <li><a href="http://mogu.io/feed/comments/">评论 RSS</a></li>
+            <li><a href="http://www.typecho.org">Typecho</a></li>
+        </ul>
+	</section>
+    
+</div><!-- end #sidebar -->
+
+            
+        </div><!-- end .colgroup -->
+    </div>
+</div><!-- end #body -->
+
+<footer id="footer" role="contentinfo">
+    &copy; 2016 <a href="http://mogu.io/">蘑菇街技术博客</a>.
+    由 <a href="http://www.typecho.org">Typecho</a> 强力驱动.
+</footer><!-- end #footer -->
+
+</body>
+</html>
