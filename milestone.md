@@ -16,6 +16,7 @@ header-img: "img/zhihu.jpg"
 - [AndroidStudio怎么将开源项目发布到jcenter](http://blog.csdn.net/wangdong20/article/details/50098535)
 - [awesome-android-tips](https://github.com/jiang111/awesome-android-tips)
 - [Android网络请求心路历程](http://www.jianshu.com/p/3141d4e46240)
+- [简明vim练级攻略](http://coolshell.cn/articles/5426.html)
 
 
 
