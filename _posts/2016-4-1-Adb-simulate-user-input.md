@@ -5,8 +5,7 @@ date: 2016-4-1
 categories: blog
 tags: [ADB,模拟用户输入,Android]
 description: 如何使用ADB模拟用户输入
----  
-
+---
 # Adb模拟用户输入  
 ## 1.目的  
 通过代码模拟用户的行为，这里主要模拟用户的点击行为，长按行为，滑动行为  
