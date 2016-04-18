@@ -73,7 +73,7 @@ C语言中调用汇编子程序，先上源代码
 	pop ebp
 	ret
 
-![](img/2016-4-18-17-29.png)
+![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/_posts/img/2016-4-18-17-29.png)
 
 	可以看到，我原本使用的是bp，这里变成了esi，这也是为什么我必须将si压栈，将bp赋值给si的原因
 	
