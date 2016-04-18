@@ -1,7 +1,7 @@
 ---
 layout: post
 title: VS2015，C语言中调用汇编子程序
-date: 2015-4-18
+date: 2016-4-18
 categories: blog
 tags: [VS2015,汇编,C语言,混合编程]
 description: 如何在C语言中调用汇编子程序
