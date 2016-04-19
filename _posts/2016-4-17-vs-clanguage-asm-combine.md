@@ -83,7 +83,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 右键项目名->添加->现有项  
 选择asmfile.obj即可  
 过程图如下  
-![](https://github.com/ylqhust/ylqhust.github.io/blob/master/img/md_img/add_asmfile_obj_to_project.png)  
+![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/img/md_img/add_asmfile_obj_to_project.png)  
 ![](../img/md_img/add_asmfile_obj_to_project_c.png)  
 ![](../img/md_img/add_asmfile_obj_to_project_complete.png)  
 
