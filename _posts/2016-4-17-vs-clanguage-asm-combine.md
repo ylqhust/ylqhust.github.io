@@ -73,9 +73,10 @@ C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 不同的vs版本的路径可能不同，但总之是为了找到ml.exe程序  
 将这个路径加入环境变量  
 然后再命令行中输入  
+
 > 	ml /c /coff asmfile.asm  
  	
-![](../img/md_img/ml_c_coff_asmfile.png)  
+![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/img/md_img/ml_c_coff_asmfile.png)  
 []()
 完成后，会生成一个asmfile.obj文件  
 
@@ -84,8 +85,8 @@ C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 选择asmfile.obj即可  
 过程图如下  
 ![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/img/md_img/add_asmfile_obj_to_project.png)  
-![](../img/md_img/add_asmfile_obj_to_project_c.png)  
-![](../img/md_img/add_asmfile_obj_to_project_complete.png)  
+![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/img/md_img/add_asmfile_obj_to_project_c.png)  
+![](https://raw.githubusercontent.com/ylqhust/ylqhust.github.io/master/img/md_img/add_asmfile_obj_to_project_complete.png)  
 
 4和5就直接上代码，一看就懂  
 
