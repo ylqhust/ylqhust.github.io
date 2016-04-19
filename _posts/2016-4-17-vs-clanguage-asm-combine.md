@@ -1,6 +1,6 @@
 ---
 layout: post
-title: vs2015 C,汇编相互调用
+title: VS2015，C嵌套汇编 & C,汇编相互调用
 date: 2016-4-17
 categories: blog
 tags: [汇编,C语言,VS2015]
@@ -76,13 +76,14 @@ C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 > 	ml /c /coff asmfile.asm  
  	
 ![](../img/md_img/ml_c_coff_asmfile.png)  
+[]()
 完成后，会生成一个asmfile.obj文件  
 
 3.将obj文件加入项目  
 右键项目名->添加->现有项  
 选择asmfile.obj即可  
 过程图如下  
-![](../img/md_img/add_asmfile_obj_to_project.png)  
+![](https://github.com/ylqhust/ylqhust.github.io/blob/master/img/md_img/add_asmfile_obj_to_project.png)  
 ![](../img/md_img/add_asmfile_obj_to_project_c.png)  
 ![](../img/md_img/add_asmfile_obj_to_project_complete.png)  
 
@@ -157,6 +158,7 @@ C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin
 	}
 
 代码有了，接着就是如何生成lib了，这里要用到cl.exe和lib.exe两个程序，还是在vs2015的vc/bin目录下，输入命令  
+
 > cl /c mylib.c  
 
 此命令将会生成一个mylib.obj文件  
